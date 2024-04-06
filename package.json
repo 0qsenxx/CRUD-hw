@@ -1,0 +1,24 @@
+{
+  "name": "crud-hw",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "npx json-server movies.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0qsenxx/CRUD-hw.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/0qsenxx/CRUD-hw/issues"
+  },
+  "homepage": "https://github.com/0qsenxx/CRUD-hw#readme",
+  "dependencies": {
+    "json-server": "^1.0.0-alpha.23"
+  }
+}
