@@ -5,6 +5,9 @@ const backdropRef = document.querySelector(".backdrop");
 const formRef = document.querySelector("[data-form]");
 const closeModalBtnRef = document.querySelector("[data-button=closeModal]");
 
+let removedInputs = [];
+formRef.querySelectorAll("input").forEach((input) => removedInputs.push(input));
+
 closeModalBtnRef.addEventListener("click", () =>
   backdropRef.classList.toggle("is-hidden")
 );
@@ -40,14 +43,19 @@ actionsListRef.addEventListener("click", (evt) => {
   }
 
   if (evt.target.hasAttribute("data-add")) {
-    evt.target.addEventListener("click", () => {
-      backdropRef.classList.toggle("is-hidden");
-      if (!formRef.querySelector(".edit-movie__input")) {
-        return;
-      } else {
-        document.querySelector(".edit-movie__input").remove();
-      }
-    });
+    backdropRef.classList.toggle("is-hidden");
+
+    if (formRef.querySelectorAll("input").length !== 4) {
+      removedInputs.forEach((input) => formRef.prepend(input));
+    }
+
+    if (formRef.querySelector(".edit-movie__input")) {
+      document.querySelector(".edit-movie__input").remove();
+    }
+    if (formRef.querySelector(".remove-movie__input")) {
+      document.querySelector(".remove-movie__input").remove();
+    }
+
     formRef.addEventListener("submit", (e) => {
       e.preventDefault();
 
@@ -73,20 +81,29 @@ actionsListRef.addEventListener("click", (evt) => {
         })
         .then((data) => {
           console.log(data);
-        });
+        })
+        .catch((err) => console.log("err", err));
     });
   }
 
   if (evt.target.hasAttribute("data-edit")) {
-    evt.target.addEventListener("click", () => {
-      backdropRef.classList.toggle("is-hidden");
-      if (!formRef.querySelector(".edit-movie__input")) {
-        formRef.insertAdjacentHTML(
-          "afterbegin",
-          `<input type="text" placeholder="Film id" class="edit-movie__input"/>`
-        );
-      } else return;
-    });
+    backdropRef.classList.toggle("is-hidden");
+    if (!formRef.querySelector(".edit-movie__input")) {
+      formRef.insertAdjacentHTML(
+        "afterbegin",
+        `<input type="text" placeholder="Film id" class="edit-movie__input"/>`
+      );
+    } else return;
+
+    if (formRef.querySelector(".remove-movie__input")) {
+      document.querySelector(".remove-movie__input").remove();
+    }
+
+    if (formRef.querySelectorAll("input").length !== 5) {
+      removedInputs.forEach((input) =>
+        formRef.querySelector(".edit-movie__input").after(input)
+      );
+    }
 
     document
       .querySelector(".edit-movie__input")
@@ -128,33 +145,30 @@ actionsListRef.addEventListener("click", (evt) => {
         })
         .then((data) => {
           console.log(data);
-        });
+        })
+        .catch((err) => console.log("err", err));
     });
   }
 
   if (evt.target.hasAttribute("data-remove")) {
     backdropRef.classList.toggle("is-hidden");
-    formRef.querySelectorAll("input").forEach((input) => input.remove());
+    removedInputs = [];
+    formRef.querySelectorAll("input").forEach((input) => {
+      removedInputs.push(input);
+      input.remove();
+    });
     formRef.insertAdjacentHTML(
       "afterbegin",
       `<input placeholder="Remove movie id" class="remove-movie__input"/>`
     );
 
-    if (!formRef.querySelector(".edit-movie__input")) {
-      return;
-    } else {
-      document.querySelector(".edit-movie__input").remove();
-    }
-
     formRef.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const removeMovieInputRef = document.querySelector(
+      const removeMovieInputValue = document.querySelector(
         ".remove-movie__input"
       );
-      console.log(removeMovieInputRef.value);
+      e.preventDefault();
 
-      fetch(`http://localhost:3000/movies/id/${removeMovieInputRef.value}`, {
+      fetch(`http://localhost:3000/movies/${removeMovieInputValue.value}`, {
         method: "DELETE",
       })
         .then((res) => {

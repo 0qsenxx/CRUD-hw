@@ -1,3 +1,13 @@
+ul {
+  list-style: none;
+}
+
+.actions__list {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
 table {
   font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
   font-size: 14px;
